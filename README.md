@@ -1,0 +1,161 @@
+# 🎵 MusicMetrics
+
+**Projeto de Análise de Dados Musicais com Python, SQL e Power BI**
+
+Análise completa de dados do Spotify utilizando API, ETL com Python, armazenamento em MySQL e visualização em Power BI para gerar insights sobre padrões musicais e comportamento de escuta.
+
+---
+
+## 📋 Índice
+
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Configuração do Ambiente](#configuração-do-ambiente)
+- [Como Usar](#como-usar)
+- [Análises Disponíveis](#análises-disponíveis)
+- [Dashboard Power BI](#dashboard-power-bi)
+- [Próximos Passos](#próximos-passos)
+
+---
+
+## 📊 Sobre o Projeto
+
+O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra habilidades em:
+
+- **Extração de dados** via API do Spotify
+- **Transformação e limpeza** de dados com Python (Pandas)
+- **Modelagem dimensional** e armazenamento em MySQL
+- **Análises SQL** para responder perguntas de negócio
+- **Visualização** de insights em dashboards do Power BI
+
+### Objetivos
+
+- Analisar padrões de consumo musical ao longo do tempo
+- Identificar características de músicas populares
+- Compreender evolução do gosto musical pessoal
+- Gerar insights acionáveis sobre preferências musicais
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+### Linguagens e Frameworks
+- **Python 3.13+** - Extração e transformação de dados
+- **SQL (MySQL)** - Armazenamento e análises relacionais
+- **Power BI** - Visualização de dados
+
+### Bibliotecas Python
+- `spotipy` - Integração com API do Spotify
+- `pandas` - Manipulação de dados
+- `numpy` - Operações numéricas
+- `mysql-connector-python` - Conexão com MySQL
+- `sqlalchemy` - ORM para banco de dados
+- `python-dotenv` - Gerenciamento de variáveis de ambiente
+
+### Ferramentas
+- **VS Code** - Editor de código
+- **MySQL Workbench** - Gerenciamento de banco de dados
+- **Git** - Controle de versão
+- **Spotify Developer Dashboard** - Gerenciamento de credenciais API
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+MusicMetrics/
+│
+├── data/
+│   ├── raw/                    # Dados brutos extraídos da API
+│   └── processed/              # Dados processados e limpos
+│
+├── scripts/
+│   ├── 01_test_spotify_connection.py      # Testa conexão com API
+│   ├── 02_extract_spotify_data.py         # Extrai dados do Spotify
+│   ├── 03_clean_and_transform.py          # Limpa e transforma dados
+│   └── 04_load_to_mysql.py                # Carrega dados no MySQL
+│
+├── sql/
+│   ├── 01_create_schema.sql               # Cria estrutura do banco
+│   ├── 02_analytical_queries.sql          # Queries analíticas
+│   └── 03_views_and_procedures.sql        # Views e procedures úteis
+│
+├── dashboards/
+│   └── MusicMetrics_Dashboard.pbix        # Dashboard Power BI
+│
+├── docs/
+│   ├── data_dictionary.md                 # Dicionário de dados
+│   └── insights.md                        # Insights e descobertas
+│
+├── .env.example                           # Template de variáveis de ambiente
+├── .gitignore                             # Arquivos ignorados pelo Git
+├── requirements.txt                       # Dependências Python
+└── README.md                              # Este arquivo
+```
+
+---
+
+## 📈 Análises Disponíveis
+
+### Análises de Perfil Musical
+
+- **Top Artistas e Músicas**: Rankings por período (4 semanas, 6 meses, histórico)
+- **Evolução do Gosto Musical**: Como suas preferências mudaram ao longo do tempo
+- **Diversidade Musical**: Quantidade de gêneros e artistas únicos
+
+### Análises de Características de Áudio
+
+- **Perfil Sonoro**: Distribuição de danceability, energy, valence
+- **Correlações**: Relação entre características (ex: músicas felizes são mais dançantes?)
+- **Comparação Temporal**: Evolução das características das músicas que você escuta
+
+### Análises de Comportamento
+
+- **Padrões de Escuta**: Horários e dias com mais reproduções
+- **Músicas Recorrentes**: Faixas mais repetidas
+- **Descoberta Musical**: Taxa de músicas novas vs conhecidas
+
+---
+
+## 📊 Dashboard Power BI
+
+O dashboard interativo inclui:
+
+### Página 1: Visão Geral
+- KPIs principais (total de artistas, músicas, gêneros)
+- Top 10 artistas e músicas
+- Timeline de descoberta musical
+
+### Página 2: Audio Features
+- Radar chart com perfil sonoro médio
+- Distribuição de características de áudio
+- Análise comparativa por gênero
+
+### Página 3: Tendências Temporais
+- Evolução de preferências ao longo do tempo
+- Padrões de escuta por dia/hora
+- Sazonalidade musical
+
+### Página 4: Descoberta e Diversidade
+- Matriz de gêneros musicais
+- Análise de popularidade
+- Taxa de descoberta de novos artistas
+
+---
+
+## 🎯 Próximos Passos
+
+- [ ] Adicionar análise de letras das músicas
+- [ ] Implementar sistema de recomendação básico
+- [ ] Criar alertas para novos lançamentos de artistas favoritos
+- [ ] Análise preditiva de próximas músicas favoritas
+- [ ] Automação de extração diária/semanal
+
+---
+
+## 👤 Autor
+
+**Seu Nome**
+- GitHub: [@seu-usuario](https://github.com/seu-usuario)
+- LinkedIn: [Seu Nome](https://linkedin.com/in/seu-perfil)
