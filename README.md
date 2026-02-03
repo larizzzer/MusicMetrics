@@ -6,24 +6,11 @@ Análise completa de dados do Spotify utilizando API, ETL com Python, armazename
 
 ---
 
-## 📋 Índice
-
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Configuração do Ambiente](#configuração-do-ambiente)
-- [Como Usar](#como-usar)
-- [Análises Disponíveis](#análises-disponíveis)
-- [Dashboard Power BI](#dashboard-power-bi)
-- [Próximos Passos](#próximos-passos)
-
----
-
 ## 📊 Sobre o Projeto
 
 O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra habilidades em:
 
-- **Extração de dados** via API do Spotify
+- **Extração de dados** via Dataset do Kaggle
 - **Transformação e limpeza** de dados com Python (Pandas)
 - **Modelagem dimensional** e armazenamento em MySQL
 - **Análises SQL** para responder perguntas de negócio
@@ -46,7 +33,6 @@ O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra h
 - **Power BI** - Visualização de dados
 
 ### Bibliotecas Python
-- `spotipy` - Integração com API do Spotify
 - `pandas` - Manipulação de dados
 - `numpy` - Operações numéricas
 - `mysql-connector-python` - Conexão com MySQL
@@ -57,7 +43,6 @@ O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra h
 - **VS Code** - Editor de código
 - **MySQL Workbench** - Gerenciamento de banco de dados
 - **Git** - Controle de versão
-- **Spotify Developer Dashboard** - Gerenciamento de credenciais API
 
 ---
 
@@ -120,7 +105,7 @@ MusicMetrics/
 
 ## 📊 Dashboard Power BI
 
-O dashboard interativo inclui:
+O dashboard interativo irá incluir:
 
 ### Página 1: Visão Geral
 - KPIs principais (total de artistas, músicas, gêneros)
@@ -148,16 +133,12 @@ O dashboard interativo inclui:
 
 - [ ] Adicionar análise de letras das músicas
 - [ ] Implementar sistema de recomendação básico
-- [ ] Criar alertas para novos lançamentos de artistas favoritos
-- [ ] Análise preditiva de próximas músicas favoritas
 - [ ] Automação de extração diária/semanal
 
 ---
 
-## 👤 Autor
+## 👤 Autora
 
-**Seu Nome**
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- LinkedIn: [Seu Nome](https://linkedin.com/in/seu-perfil)
-# MusicMetrics
-# MusicMetrics
+**Larissa Gomes Gaspar**
+- GitHub: [larizzzer](https://github.com/larizzzer)
+- LinkedIn: [Seu Nome](https://linkedin.com/in/larissa-gomes-gaspar)
