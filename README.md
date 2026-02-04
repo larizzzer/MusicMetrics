@@ -28,7 +28,7 @@ O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra h
 ## 🛠 Tecnologias Utilizadas
 
 ### Linguagens e Frameworks
-- **Python 3.13+** - Extração e transformação de dados
+- **Python** - Extração e transformação de dados
 - **SQL (MySQL)** - Armazenamento e análises relacionais
 - **Power BI** - Visualização de dados
 
@@ -52,30 +52,26 @@ O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra h
 MusicMetrics/
 │
 ├── data/
-│   ├── raw/                    # Dados brutos extraídos da API
-│   └── processed/              # Dados processados e limpos
+│   ├── raw/                               # Dados brutos extraídos do Dataset
+│   └── processed/                         # Dados processados e limpos
 │
 ├── scripts/
-│   ├── 01_test_spotify_connection.py      # Testa conexão com API
-│   ├── 02_extract_spotify_data.py         # Extrai dados do Spotify
-│   ├── 03_clean_and_transform.py          # Limpa e transforma dados
-│   └── 04_load_to_mysql.py                # Carrega dados no MySQL
+│   ├── 01_Exploracao_Inicial.py           # Extrai dados do Spotify
+│   ├── 02_Limpeza_e_Transformacao.py      # Limpa e transforma dados
+│   ├── 03_Carregamento_dos_Dados.py       # Carrega dados no MySQL
 │
 ├── sql/
-│   ├── 01_create_schema.sql               # Cria estrutura do banco
-│   ├── 02_analytical_queries.sql          # Queries analíticas
-│   └── 03_views_and_procedures.sql        # Views e procedures úteis
+│   ├── 01_Criacao_Banco_de_Dados.sql      # Cria estrutura do banco
+│   ├── 02_Queries_Analiticas.sql          # Queries analíticas
+│   └── 03_Views_e_Procedures.sql          # Views e procedures úteis
 │
 ├── dashboards/
-│   └── MusicMetrics_Dashboard.pbix        # Dashboard Power BI
+│   └── MusicMetrics_Dashboard.pbix        # Dashboard no Power BI
 │
 ├── docs/
-│   ├── data_dictionary.md                 # Dicionário de dados
-│   └── insights.md                        # Insights e descobertas
+│   ├── projeto.pdf                        # Projeto documentado
 │
-├── .env.example                           # Template de variáveis de ambiente
 ├── .gitignore                             # Arquivos ignorados pelo Git
-├── requirements.txt                       # Dependências Python
 └── README.md                              # Este arquivo
 ```
 
