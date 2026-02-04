@@ -14,8 +14,6 @@ from datetime import datetime
 load_dotenv()
 
 # ============================================
-# CONFIGURAÇÃO - ALTERE AQUI SE NECESSÁRIO
-# ============================================
 
 # Caminhos dos arquivos processados
 PROCESSED_DATA_PATH = '../MusicMetrics/data/processed/'
@@ -23,12 +21,12 @@ TRACKS_FILE = 'tracks_limpo.csv'
 ARTISTS_FILE = 'artists_limpo.csv'
 AUDIO_FEATURES_FILE = 'audios_limpos.csv'
 
-# Configurações do banco (vêm do arquivo .env)
+# Configurações do banco
 DB_CONFIG = {
     'host': os.getenv('MYSQL_HOST', 'localhost'),
     'user': os.getenv('MYSQL_USER', 'root'),
     'password': os.getenv('MYSQL_PASSWORD'),
-    'database': os.getenv('MYSQL_DATABASE', 'musicmetrics_db'),
+    'database': os.getenv('MYSQL_DATABASE', 'MusicMetrics'),
     'port': int(os.getenv('MYSQL_PORT', 3306))
 }
 
@@ -119,8 +117,15 @@ def load_tracks(connection, df_tracks):
             updated_at = CURRENT_TIMESTAMP
     """
     
+    # NOVO: Buscar todos os artist_ids válidos que existem no banco
+    print("  🔍 Verificando artistas válidos no banco...")
+    cursor.execute("SELECT artist_id FROM dim_artists")
+    valid_artist_ids = set(row[0] for row in cursor.fetchall())
+    print(f"  ✅ {len(valid_artist_ids):,} artistas válidos encontrados")
+    
     # Preparar dados
     records = []
+    skipped = 0
     errors = 0
     
     for _, row in df_tracks.iterrows():
@@ -133,10 +138,18 @@ def load_tracks(connection, df_tracks):
                 except:
                     release_date = None
             
+            # Pegar artist_id
+            artist_id = str(row.get('primary_artist_id', '')) if pd.notna(row.get('primary_artist_id')) else None
+            
+            # NOVO: Verificar se o artist_id existe antes de inserir
+            if artist_id and artist_id not in valid_artist_ids:
+                skipped += 1
+                continue  # Pular esta música
+            
             records.append((
                 str(row['track_id']),
-                str(row['track_name']),
-                str(row.get('primary_artist_id', '')) if pd.notna(row.get('primary_artist_id')) else None,
+                str(row['track_name'])[:255],
+                artist_id,  # Pode ser None se não tiver artista
                 None,  # album_id (não temos no dataset)
                 int(row.get('duration_ms', 0)),
                 bool(row.get('explicit', False)),
@@ -148,12 +161,15 @@ def load_tracks(connection, df_tracks):
             if errors <= 5:  # Mostrar apenas os primeiros 5 erros
                 print(f"  ⚠️ Erro ao processar linha: {e}")
     
+    if skipped > 0:
+        print(f"  ⚠️ {skipped:,} músicas puladas (artista não encontrado)")
+    
     if errors > 5:
         print(f"  ⚠️ Total de erros ao processar: {errors}")
     
     try:
-        # Inserir em lotes de 1000
-        batch_size = 1000
+        # Inserir em lotes
+        batch_size = 500
         total_inserted = 0
         
         for i in range(0, len(records), batch_size):

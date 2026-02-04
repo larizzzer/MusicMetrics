@@ -10,8 +10,6 @@ from datetime import datetime
 import re
 
 # ============================================
-# CONFIGURAÇÃO - ALTERE AQUI OS CAMINHOS
-# ============================================
 
 # Caminhos
 RAW_DATA_PATH = '../MusicMetrics/data/raw/'
@@ -104,11 +102,48 @@ def clean_tracks(df_tracks):
         df['artists'] = df['artists'].fillna('Unknown Artist')
         df['artists'] = df['artists'].str.strip()
     
-    # 10. Processar id_artists (pode vir como lista)
+    # 10. Processar id_artists (pode vir como lista em formato string)
     if 'id_artists' in df.columns:
+        print("  🔧 Processando IDs de artistas...")
         df['id_artists'] = df['id_artists'].fillna('')
-        # Se vier como lista, pegar o primeiro ID
-        df['primary_artist_id'] = df['id_artists'].apply(lambda x: x.split(',')[0].strip() if isinstance(x, str) else '')
+    
+        def limpar_artist_id(x):
+            """Remove colchetes, aspas e pega apenas o primeiro ID"""
+            if pd.isna(x) or x == '':
+                return None
+        
+            # Converter para string
+            x = str(x)
+
+            # Remover colchetes externos: "['abc']" -> "'abc'"
+            x = x.strip().strip('[]')
+        
+            # Remover aspas: "'abc'" -> "abc"
+            x = x.strip().strip("'\"")
+        
+            # Se tiver múltiplos IDs separados por vírgula, pegar só o primeiro
+            if ',' in x:
+                x = x.split(',')[0].strip().strip("'\"")
+        
+            # Limpar novamente para garantir
+            x = x.strip().strip("'\"")
+        
+            return x if x else None
+    
+        df['primary_artist_id'] = df['id_artists'].apply(limpar_artist_id)
+    
+        # Verificar quantos ficaram nulos
+        null_count = df['primary_artist_id'].isnull().sum()
+        print(f"    ✅ IDs processados")
+        print(f"    ⚠️ {null_count:,} músicas sem artista válido")
+    
+        # Mostrar exemplos de antes e depois (primeiras 5 linhas)
+        print("\n  📋 Exemplos de transformação:")
+        for i in range(min(5, len(df))):
+            original = df['id_artists'].iloc[i]
+            limpo = df['primary_artist_id'].iloc[i]
+            print(f"    Antes: {original}")
+            print(f"    Depois: {limpo}\n")
     
     print(f"✅ Limpeza concluída: {len(df):,} linhas mantidas")
     
