@@ -43,6 +43,7 @@ data/raw/*.csv
 data/processed/*.csv
 *.xlsx
 *.xls
+requirements.txt
 
 # Arquivos ZIP
 *.zip
