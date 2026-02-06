@@ -15,16 +15,6 @@ CREATE TABLE IF NOT EXISTS dim_artists (
     INDEX idx_popularity (popularity)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-SELECT artist_name,
-	   genres
-FROM dim_artists
-LIMIT 10;
-
-SELECT track_name,
-	   popularity
-FROM dim_tracks
-LIMIT 10;
-
 -- Tabela de Álbuns
 CREATE TABLE IF NOT EXISTS dim_albums (
     album_id VARCHAR(50) PRIMARY KEY,
@@ -100,52 +90,8 @@ CREATE TABLE IF NOT EXISTS dim_time (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- FATOS (Fact Tables)
+-- Algumas alterações antes de ir para as análises
 -- ============================================
-
--- Tabela de Top Artistas (histórico de rankings)
-CREATE TABLE IF NOT EXISTS fact_top_artists (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    artist_id VARCHAR(50) NOT NULL,
-    time_range VARCHAR(20) NOT NULL,
-    rank_position INT NOT NULL,
-    extracted_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (artist_id) REFERENCES dim_artists(artist_id),
-    INDEX idx_time_range (time_range),
-    INDEX idx_extracted_at (extracted_at),
-    INDEX idx_rank (rank_position)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabela de Top Músicas (histórico de rankings)
-CREATE TABLE IF NOT EXISTS fact_top_tracks (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    track_id VARCHAR(50) NOT NULL,
-    time_range VARCHAR(20) NOT NULL,
-    rank_position INT NOT NULL,
-    extracted_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (track_id) REFERENCES dim_tracks(track_id),
-    INDEX idx_time_range (time_range),
-    INDEX idx_extracted_at (extracted_at),
-    INDEX idx_rank (rank_position)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Tabela de Histórico de Reprodução
-CREATE TABLE IF NOT EXISTS fact_listening_history (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    track_id VARCHAR(50) NOT NULL,
-    played_at TIMESTAMP NOT NULL,
-    date_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (track_id) REFERENCES dim_tracks(track_id),
-    FOREIGN KEY (date_id) REFERENCES dim_time(date_id),
-    INDEX idx_played_at (played_at),
-    INDEX idx_date_id (date_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
 
 -- Limpeza das tabelas para recriação dos dados
 SET FOREIGN_KEY_CHECKS = 0;
@@ -153,4 +99,32 @@ TRUNCATE TABLE dim_audio_features;
 TRUNCATE TABLE dim_tracks;
 TRUNCATE TABLE dim_artists;
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- Verificação se foi realmente salvo direito os dados
+SELECT artist_name,
+	   genres
+FROM dim_artists
+LIMIT 10;
+
+SELECT track_name,
+	   popularity
+FROM dim_tracks
+LIMIT 10;
+
+SELECT *
+FROM dim_audio_features
+LIMIT 10;
+
+-- Desabilitar safe mode
+SET SQL_SAFE_UPDATES = 0;
+
+-- Fazer o UPDATE
+UPDATE dim_artists SET genres = NULL WHERE genres = 'nan' OR genres = '' OR genres = '[]';
+
+-- Reabilitar safe mode
+SET SQL_SAFE_UPDATES = 1;
+
+-- Verificar quantos foram alterados
+SELECT COUNT(*) as artistas_sem_genero
+FROM dim_artists WHERE genres IS NULL;
 
