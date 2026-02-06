@@ -51,10 +51,6 @@ O **MusicMetrics** é um projeto end-to-end de análise de dados que demonstra h
 ```
 MusicMetrics/
 │
-├── data/
-│   ├── raw/                               # Dados brutos extraídos do Dataset
-│   └── processed/                         # Dados processados e limpos
-│
 ├── scripts/
 │   ├── 01_Exploracao_Inicial.py           # Extrai dados do Spotify
 │   ├── 02_Limpeza_e_Transformacao.py      # Limpa e transforma dados
@@ -69,7 +65,7 @@ MusicMetrics/
 │   └── MusicMetrics_Dashboard.pbix        # Dashboard no Power BI
 │
 ├── docs/
-│   ├── projeto.pdf                        # Projeto documentado
+│   └── projeto.pdf                        # Projeto documentado
 │
 ├── .gitignore                             # Arquivos ignorados pelo Git
 └── README.md                              # Este arquivo
@@ -137,4 +133,4 @@ O dashboard interativo irá incluir:
 
 **Larissa Gomes Gaspar**
 - GitHub: [larizzzer](https://github.com/larizzzer)
-- LinkedIn: [Seu Nome](https://linkedin.com/in/larissa-gomes-gaspar)
+- LinkedIn: [Larissa Gomes Gaspar](https://linkedin.com/in/larissa-gomes-gaspar)
