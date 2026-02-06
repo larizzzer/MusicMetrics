@@ -83,12 +83,21 @@ def load_artists(connection, df_artists):
         ))
     
     try:
-        cursor.executemany(insert_query, records)
-        connection.commit()
-        print(f"  ✅ {len(records):,} artistas carregados")
+        # Inserir em lotes
+        batch_size = 500
+        total_inserted = 0
+        
+        for i in range(0, len(records), batch_size):
+            batch = records[i:i+batch_size]
+            cursor.executemany(insert_query, batch)
+            connection.commit()
+            total_inserted += len(batch)
+            print(f"  📊 Progresso: {total_inserted:,}/{len(records):,} artistas", end='\r')
+        
+        print(f"\n  ✅ {len(records):,} artistas carregados")
         return True
     except Error as e:
-        print(f"  ❌ Erro ao carregar artistas: {e}")
+        print(f"\n  ❌ Erro ao carregar artistas: {e}")
         connection.rollback()
         return False
     finally:
@@ -146,10 +155,22 @@ def load_tracks(connection, df_tracks):
                 skipped += 1
                 continue  # Pular esta música
             
+<<<<<<< Updated upstream
             records.append((
                 str(row['track_id']),
                 str(row['track_name'])[:255],
                 artist_id,  # Pode ser None se não tiver artista
+=======
+            # NOVO: Limitar track_name a 255 caracteres
+            track_name = str(row['track_name'])
+            if len(track_name) > 255:
+                track_name = track_name[:255]
+            
+            records.append((
+                str(row['track_id']),
+                track_name,  # Já limitado a 255 caracteres
+                artist_id,
+>>>>>>> Stashed changes
                 None,  # album_id (não temos no dataset)
                 int(row.get('duration_ms', 0)),
                 bool(row.get('explicit', False)),
@@ -159,7 +180,10 @@ def load_tracks(connection, df_tracks):
         except Exception as e:
             errors += 1
             if errors <= 5:  # Mostrar apenas os primeiros 5 erros
-                print(f"  ⚠️ Erro ao processar linha: {e}")
+                print(f"\n  ⚠️ Erro ao processar linha: {e}")
+    
+    if skipped > 0:
+        print(f"  ⚠️ {skipped:,} músicas puladas (artista não encontrado)")
     
     if skipped > 0:
         print(f"  ⚠️ {skipped:,} músicas puladas (artista não encontrado)")
@@ -168,7 +192,11 @@ def load_tracks(connection, df_tracks):
         print(f"  ⚠️ Total de erros ao processar: {errors}")
     
     try:
+<<<<<<< Updated upstream
         # Inserir em lotes
+=======
+        # Inserir em lotes menores para evitar timeout
+>>>>>>> Stashed changes
         batch_size = 500
         total_inserted = 0
         
@@ -218,11 +246,26 @@ def load_audio_features(connection, df_features):
             updated_at = CURRENT_TIMESTAMP
     """
     
+    # NOVO: Buscar track_ids válidos
+    print("  🔍 Verificando músicas válidas no banco...")
+    cursor.execute("SELECT track_id FROM dim_tracks")
+    valid_track_ids = set(row[0] for row in cursor.fetchall())
+    print(f"  ✅ {len(valid_track_ids):,} músicas válidas encontradas")
+    
     # Preparar dados
     records = []
+    skipped = 0
+    
     for _, row in df_features.iterrows():
+        track_id = str(row['track_id'])
+        
+        # Verificar se a música existe no banco
+        if track_id not in valid_track_ids:
+            skipped += 1
+            continue
+        
         records.append((
-            str(row['track_id']),
+            track_id,
             float(row.get('danceability', 0)),
             float(row.get('energy', 0)),
             int(row.get('key', 0)),
@@ -237,9 +280,12 @@ def load_audio_features(connection, df_features):
             int(row.get('time_signature', 4))
         ))
     
+    if skipped > 0:
+        print(f"  ⚠️ {skipped:,} audio features puladas (música não encontrada)")
+    
     try:
         # Inserir em lotes
-        batch_size = 1000
+        batch_size = 500
         total_inserted = 0
         
         for i in range(0, len(records), batch_size):
@@ -293,7 +339,7 @@ def main():
     
     if not os.path.exists(tracks_path) or not os.path.exists(artists_path):
         print("\n❌ ERRO: Arquivos processados não encontrados!")
-        print(f"   Execute primeiro o script: 04_clean_and_transform.py")
+        print(f"   Execute primeiro o script: 02_Limpeza_e_Transformacao.py")
         return
     
     # Conectar ao MySQL
@@ -345,7 +391,7 @@ def main():
         
         print("\n✅ CARGA CONCLUÍDA COM SUCESSO!")
         print("\n💡 Próximos passos:")
-        print("   1. Execute queries SQL para análises (arquivo: sql/02_analytical_queries.sql)")
+        print("   1. Execute queries SQL para análises")
         print("   2. Conecte o Power BI ao banco de dados")
         print("   3. Crie os dashboards!")
         

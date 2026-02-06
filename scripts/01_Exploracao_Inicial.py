@@ -195,8 +195,8 @@ def main():
     print("=" * 80)
     print("\n💡 Próximos passos:")
     print("   1. Revise os dados identificados")
-    print("   2. Execute o script de limpeza (03_clean_and_transform.py)")
-    print("   3. Carregue os dados no MySQL (04_load_to_mysql.py)")
+    print("   2. Execute o script de limpeza (02_Limpeza_e_Transformacao.py)")
+    print("   3. Carregue os dados no MySQL (03_Carregamento_dos_Dados.py)")
 
 if __name__ == "__main__":
     main()
