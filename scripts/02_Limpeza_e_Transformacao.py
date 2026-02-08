@@ -27,7 +27,6 @@ OUTPUT_AUDIO_FEATURES = 'audios_limpos.csv'
 # ============================================
 
 def load_data():
-    """Carrega os dados brutos"""
     print("📂 Carregando dados...")
     
     tracks_path = os.path.join(RAW_DATA_PATH, TRACKS_FILE)
@@ -42,7 +41,6 @@ def load_data():
     return df_tracks, df_artists
 
 def clean_tracks(df_tracks):
-    """Limpa e transforma o dataset de tracks"""
     print("\n🧹 Limpando dados de tracks...")
     
     df = df_tracks.copy()
@@ -115,17 +113,16 @@ def clean_tracks(df_tracks):
             # Converter para string
             x = str(x)
 
-            # Remover colchetes externos: "['abc']" -> "'abc'"
+            # Remover colchetes externos
             x = x.strip().strip('[]')
         
-            # Remover aspas: "'abc'" -> "abc"
+            # Remover aspas
             x = x.strip().strip("'\"")
         
             # Se tiver múltiplos IDs separados por vírgula, pegar só o primeiro
             if ',' in x:
                 x = x.split(',')[0].strip().strip("'\"")
         
-            # Limpar novamente para garantir
             x = x.strip().strip("'\"")
         
             return x if x else None
@@ -150,7 +147,6 @@ def clean_tracks(df_tracks):
     return df
 
 def clean_artists(df_artists):
-    """Limpa e transforma o dataset de artists"""
     print("\n🧹 Limpando dados de artistas...")
     
     df = df_artists.copy()
@@ -234,7 +230,6 @@ def extract_audio_features(df_tracks):
     return df_features
 
 def prepare_for_mysql(df_tracks, df_artists):
-    """Prepara os dados para estrutura do MySQL"""
     print("\n🗄️ Preparando dados para MySQL...")
     
     # Para tracks: manter apenas colunas relevantes
@@ -271,7 +266,6 @@ def prepare_for_mysql(df_tracks, df_artists):
     return df_tracks_mysql, df_artists_mysql
 
 def save_processed_data(df_tracks, df_artists, df_features):
-    """Salva os dados processados"""
     print("\n💾 Salvando dados processados...")
     
     # Criar diretório se não existir
@@ -294,7 +288,6 @@ def save_processed_data(df_tracks, df_artists, df_features):
         print(f"  ✅ {OUTPUT_AUDIO_FEATURES} salvo ({len(df_features):,} linhas)")
 
 def generate_report(df_tracks, df_artists):
-    """Gera relatório de qualidade dos dados"""
     print("\n" + "=" * 80)
     print("📊 RELATÓRIO DE QUALIDADE DOS DADOS")
     print("=" * 80)
@@ -314,7 +307,6 @@ def generate_report(df_tracks, df_artists):
     print("\n" + "=" * 80)
 
 def main():
-    """Função principal"""
     print("\n" + "=" * 80)
     print("🎵 MUSICMETRICS - LIMPEZA E TRANSFORMAÇÃO")
     print("=" * 80)
