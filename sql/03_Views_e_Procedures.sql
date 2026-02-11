@@ -27,38 +27,6 @@ SELECT
 FROM dim_tracks t LEFT JOIN dim_artists ar ON t.artist_id = ar.artist_id
 LEFT JOIN dim_albums al ON t.album_id = al.album_id LEFT JOIN dim_audio_features af ON t.track_id = af.track_id;
 
--- View: Top artistas atual
-CREATE OR REPLACE VIEW vw_current_top_artists AS
-SELECT 
-    fta.rank_position,
-    a.artist_name,
-    a.genres,
-    a.popularity,
-    a.followers,
-    fta.time_range,
-    fta.extracted_at
-FROM fact_top_artists fta INNER JOIN dim_artists a ON fta.artist_id = a.artist_id
-WHERE fta.extracted_at = (SELECT MAX(extracted_at) FROM fact_top_artists)
-ORDER BY fta.time_range, fta.rank_position;
-
--- View: Top músicas atual
-CREATE OR REPLACE VIEW vw_current_top_tracks AS
-SELECT 
-    ftt.rank_position,
-    t.track_name,
-    ar.artist_name,
-    t.popularity,
-    t.duration_ms,
-    af.danceability,
-    af.energy,
-    af.valence,
-    ftt.time_range,
-    ftt.extracted_at
-FROM fact_top_tracks ftt INNER JOIN dim_tracks t ON ftt.track_id = t.track_id
-INNER JOIN dim_artists ar ON t.artist_id = ar.artist_id LEFT JOIN dim_audio_features af ON t.track_id = af.track_id
-WHERE ftt.extracted_at = (SELECT MAX(extracted_at) FROM fact_top_tracks)
-ORDER BY ftt.time_range, ftt.rank_position;
-
 -- View: Estatísticas de audio features
 CREATE OR REPLACE VIEW vw_audio_features_stats AS
 SELECT 
@@ -74,4 +42,71 @@ SELECT
     MAX(energy) as max_energy
 FROM dim_audio_features;
 
+-- View: Músicas mais populares com audio features
+CREATE OR REPLACE VIEW vw_top_popular_tracks AS
+SELECT 
+    t.track_id,
+    t.track_name,
+    a.artist_name,
+    t.popularity,
+    t.release_date,
+    YEAR(t.release_date) as release_year,  -- Extrai o ano
+    t.duration_ms,
+    t.explicit,
+    af.danceability,
+    af.energy,
+    af.valence,
+    af.tempo,
+    af.acousticness
+FROM dim_tracks t INNER JOIN dim_artists a ON t.artist_id = a.artist_id
+LEFT JOIN dim_audio_features af ON t.track_id = af.track_id
+WHERE t.popularity > 0 ORDER BY t.popularity DESC;
+
+-- View: Artistas mais populares com contagem de músicas
+CREATE OR REPLACE VIEW vw_top_artists_with_tracks AS
+SELECT 
+    a.artist_id,
+    a.artist_name,
+    a.artist_genres AS genres,
+    a.popularity,
+    a.followers,
+    COUNT(t.track_id) as total_tracks,
+    AVG(t.popularity) as avg_track_popularity,
+    MAX(t.popularity) as max_track_popularity
+FROM dim_artists a LEFT JOIN dim_tracks t ON a.artist_id = t.artist_id
+GROUP BY a.artist_id, a.artist_name, a.artist_genres, a.popularity, a.followers
+ORDER BY a.popularity DESC;
+
+-- View: Evolução musical por década
+CREATE OR REPLACE VIEW vw_music_by_decade AS
+SELECT 
+    FLOOR(t.release_year / 10) * 10 as decade,
+    COUNT(t.track_id) as total_tracks,
+    AVG(t.popularity) as avg_popularity,
+    AVG(t.duration_ms / 60000) as avg_duration_min,
+    AVG(af.danceability) as avg_danceability,
+    AVG(af.energy) as avg_energy,
+    AVG(af.valence) as avg_valence,
+    AVG(af.tempo) as avg_tempo,
+    AVG(af.acousticness) as avg_acousticness
+FROM dim_tracks t LEFT JOIN dim_audio_features af ON t.track_id = af.track_id
+WHERE t.release_year IS NOT NULL
+GROUP BY decade ORDER BY decade;
+
+-- View: Músicas mais dançantes
+CREATE OR REPLACE VIEW vw_most_danceable_tracks AS
+SELECT 
+    t.track_name,
+    a.artist_name,
+    t.release_year,
+    af.danceability,
+    af.energy,
+    af.valence,
+    t.popularity
+FROM dim_tracks t INNER JOIN dim_artists a ON t.artist_id = a.artist_id
+INNER JOIN dim_audio_features af ON t.track_id = af.track_id
+WHERE af.danceability > 0.7 ORDER BY af.danceability DESC, t.popularity DESC;
+
 SELECT * FROM vw_audio_features_stats;
+SELECT * FROM vw_tracks_complete;
+DESCRIBE dim_tracks;
