@@ -108,6 +108,23 @@ INNER JOIN dim_audio_features af ON t.track_id = af.track_id
 WHERE af.danceability > 0.7
 ORDER BY af.danceability DESC, t.popularity DESC;
 
+-- Criação de tabela com os resultados para a query de artistas mais versáteis
+CREATE TABLE tb_artist_versatility AS
+SELECT
+    a.artist_name,
+    COUNT(t.track_id) AS total_tracks,
+    ROUND(MAX(af.danceability), 3) AS max_danceability,
+    ROUND(MIN(af.danceability), 3) AS min_danceability,
+    ROUND(MAX(af.danceability) - MIN(af.danceability), 3) AS variacao
+FROM dim_artists a
+INNER JOIN dim_tracks t ON a.artist_id = t.artist_id
+INNER JOIN dim_audio_features af ON t.track_id = af.track_id
+WHERE af.danceability IS NOT NULL
+GROUP BY a.artist_id, a.artist_name;
+
+-- Índice para performance
+CREATE INDEX idx_variacao ON tb_artist_versatility(variacao);
+
 SELECT * FROM vw_audio_features_stats;
 SELECT * FROM vw_tracks_complete LIMIT 10;
 SELECT * FROM vw_most_danceable_tracks LIMIT 10;

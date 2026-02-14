@@ -1,9 +1,18 @@
 USE MusicMetrics;
 
+-- Aumento de timeout para algumas queries
+SET SESSION wait_timeout = 900;
+SET SESSION interactive_timeout = 900;
+
 -- Views para saber o nome das colunas
 SELECT * FROM vw_top_popular_tracks LIMIT 1;
 SELECT * FROM vw_top_artists_with_tracks LIMIT 1;
 SELECT * FROM vw_music_by_decade LIMIT 1;
+SELECT * FROM vw_audio_features_stats;
+SELECT * FROM vw_tracks_complete LIMIT 1;
+SELECT * FROM vw_most_danceable_tracks LIMIT 1;
+SELECT * FROM dim_tracks LIMIT 1;
+SELECT * FROM dim_artists LIMIT 1;
 
 -- Análise pelo SQL com regras de negócio
 -- Top 10 artistas mais populares
@@ -54,3 +63,52 @@ SELECT
 	  END AS "Categoria"
 FROM vw_music_by_decade
 ORDER BY decade ASC;
+
+-- Top 10 gêneros musicais mais comuns
+SELECT
+	  genres AS "Gênero",
+      COUNT(*) AS "Quantidade de Artistas"
+FROM dim_artists 
+WHERE genres IS NOT NULL AND genres != '' AND genres != 'nan'
+GROUP BY genres ORDER BY COUNT(*) DESC
+LIMIT 10;
+      
+-- Artistas com apenas one-hit
+SELECT
+	  artist_name AS "Artista",
+      total_tracks AS "Total de Músicas",
+      max_track_popularity AS "Popularidade da Música"
+FROM vw_top_artists_with_tracks 
+WHERE total_tracks = 1 AND max_track_popularity > 70
+ORDER BY max_track_popularity DESC;
+
+-- Características Musicais a partir da Década de 1980
+SELECT
+	  decade AS "Década",
+      ROUND(avg_danceability, 3) AS "Dançabilidade",
+      ROUND(avg_energy, 3) AS "Energizada",
+      ROUND(avg_valence, 3) AS "Valencia",
+      ROUND(avg_tempo,3) AS "Tempo"
+FROM vw_music_by_decade
+WHERE decade >= 1980;
+
+-- Artistas mais versáteis
+SELECT 
+    artist_name AS "Artista",
+    total_tracks AS "Total de Músicas",
+    max_danceability AS "Maior Dançabilidade",
+    min_danceability AS "Menor Dançabilidade",
+    variacao AS "Variação"
+FROM tb_artist_versatility
+WHERE total_tracks >= 20
+ORDER BY variacao DESC
+LIMIT 10;
+
+      
+      
+
+
+
+
+
+
