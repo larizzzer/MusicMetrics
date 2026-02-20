@@ -104,11 +104,24 @@ WHERE total_tracks >= 20
 ORDER BY variacao DESC
 LIMIT 10;
 
-      
-      
-
-
-
-
-
-
+-- Correlação: Popularidade vs Features de Áudio
+SELECT
+    CASE
+        WHEN t.popularity > 80 THEN 'Populares'
+        WHEN t.popularity BETWEEN 40 AND 60 THEN 'Medianas'
+        WHEN t.popularity < 20 THEN 'Pouco Populares'
+    END AS Categoria,
+    ROUND(AVG(af.energy), 3) AS "Energia",
+    ROUND(AVG(af.danceability), 3) AS "Dançabilidade",
+    ROUND(AVG(af.valence), 3) AS "Valência",
+    COUNT(*) AS "Total de Músicas"
+FROM dim_tracks t INNER JOIN dim_audio_features af ON t.track_id = af.track_id
+WHERE (t.popularity > 80 OR t.popularity BETWEEN 40 AND 60 OR t.popularity < 20)
+AND af.energy IS NOT NULL AND af.danceability IS NOT NULL AND af.valence IS NOT NULL
+GROUP BY Categoria
+ORDER BY 
+    CASE Categoria
+        WHEN 'Populares' THEN 1
+        WHEN 'Medianas' THEN 2
+        WHEN 'Pouco Populares' THEN 3
+    END;
