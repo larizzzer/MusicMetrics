@@ -62,7 +62,12 @@ MusicMetrics/
 │   └── 03_Views_e_Procedures.sql          # Views e procedures úteis
 │
 ├── dashboards/
-│   └── MusicMetrics_Dashboard.pbix        # Dashboard no Power BI
+│   └── Imagens_Dashboard/                 # Imagens do Dashboard no Power BI
+│       ├── Visual_1.png
+│       ├── Visual_2.png
+│       ├── Visual_3.png
+│       ├── Visual_4.png
+│       └── Visual_5.png
 │
 ├── docs/
 │   └── projeto.pdf                        # Projeto documentado
