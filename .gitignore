@@ -44,6 +44,7 @@ data/processed/*.csv
 *.xlsx
 *.xls
 requirements.txt
+.pbix
 
 # Arquivos ZIP
 *.zip
